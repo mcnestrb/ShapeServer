@@ -1,9 +1,8 @@
 module Shapes(
-  Shape, Point, Vector, Transform, Drawing, Style (..), Colour,
+  Shape (..), Point, Vector, Transform (..), Drawing, Style (..), Colour (..),
   point, getX, getY,
   empty, circle, square,
   identity, translate, rotate, scale, (<+>),
-  red, blue, green,
   inside)  where
 
 -- Utilities
@@ -75,12 +74,14 @@ transform (Compose t1 t2)            p = transform t2 $ transform t1 p
 
 -- Style
 
-data Colour = Red | Green | Blue
+data Colour = Red | Green | Blue | White | Black
               deriving (Show, Read)
 
 red = Red
 green = Green
 blue = Blue
+white = White
+black = Black
 
 data Style = Style Colour Colour Double
              deriving (Show, Read)
