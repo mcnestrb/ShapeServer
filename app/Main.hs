@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Web.Scotty
-import qualified Text.Blaze.Html as B
+import qualified Text.Blaze.Html5 as B
+import qualified Text.Blaze.Html5.Attributes as H
+import Text.Blaze.Html.Renderer.Text (renderHtml)
 import qualified Text.Blaze.Svg as V
 import Text.Blaze.Svg11 ((!))
 import qualified Text.Blaze.Svg11 as S
@@ -13,7 +15,17 @@ import Shapes
 
 main = scotty 3000 $ do
   get "/" $ do
-    html $ renderSvg (S.docTypeSvg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do S.g $ do (foldSvgs [(identity, square, (Style Red Green 1.0)),(identity, Shapes.empty, (Style White White 0.0))]))
+    html $ do
+      renderHtml $ do
+        B.docTypeHtml $ do
+          B.head $ B.title "Brian's ShapeServer"
+          B.body $ do
+            B.form $ do
+              B.input B.! H.name "shape_input" B.! H.type_ "text"
+              B.br
+              B.input B.! H.type_ "submit" B.! H.value "Submit"
+          B.div B.! H.style "border:1px solid black" $ do
+            S.svg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do S.g $ do (foldSvgs [(identity, square, (Style Red Green 1.0)),(identity, Shapes.empty, (Style White White 0.0))])
 
 foldSvgs :: Drawing -> S.Svg
 foldSvgs drawing = Prelude.foldl1 bindSvgs (shapesToSvgs drawing)
