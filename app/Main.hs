@@ -36,7 +36,6 @@ transformShape :: S.Svg -> Transform -> S.Svg
 transformShape shape Identity = shape
 transformShape shape (Translate (Vector x y)) = shape ! A.transform (V.translate x y)
 transformShape shape (Scale (Vector x y)) = shape ! A.transform (V.scale x y)
-transformShape shape (Rotate ) = shape ! A.transform (V.rotate matrix)
 
 styleShape :: S.Svg -> Style -> S.Svg
 styleShape shape (Style strokeColour fillColour strokeWidth) = shape ! A.stroke (colToAttrVal strokeColour) ! A.fill (colToAttrVal fillColour) ! A.strokeWidth (doubleToAttrVal strokeWidth)
