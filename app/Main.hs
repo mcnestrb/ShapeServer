@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Web.Scotty
+import qualified Text.Blaze.Html as B
+import qualified Text.Blaze.Svg as V
 import Text.Blaze.Svg11 ((!))
 import qualified Text.Blaze.Svg11 as S
 import qualified Text.Blaze.Svg11.Attributes as A
@@ -11,7 +13,7 @@ import Shapes
 
 main = scotty 3000 $ do
   get "/" $ do
-    html $ renderSvg (S.docTypeSvg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do S.g $ do (foldSvgs [(identity, circle, (Style Red Green 2.0)),(identity, square, (Style Black Blue 1.0))]))
+    html $ renderSvg (S.docTypeSvg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do (S.g $ do foldSvgs [((rotate 30.0), square, (Style Red Green 1.0))]))
 
 foldSvgs :: Drawing -> S.Svg
 foldSvgs drawing = Prelude.foldl1 bindSvgs (shapesToSvgs drawing)
@@ -21,18 +23,23 @@ bindSvgs svg1 svg2 = do
                      svg1
                      svg2
 
-
 shapesToSvgs :: [(Transform, Shape, Style)] -> [S.Svg]
 shapesToSvgs [shape] = [shapeToSvg shape]
 shapesToSvgs (shape:shapes) = (shapeToSvg shape):(shapesToSvgs shapes)
 
 shapeToSvg :: (Transform, Shape, Style) -> S.Svg
-shapeToSvg (_, sh, st) = case sh of
-  Square -> styleShape (S.rect ! A.x "40" ! A.y "10" ! A.width "30" ! A.height "30") st
-  Circle -> styleShape (S.circle ! A.cx "10" ! A.cy "10" ! A.r "3") st
+shapeToSvg (tr, sh, st) = case sh of
+  Square -> transformShape (styleShape (S.rect ! A.x "40" ! A.y "10" ! A.width "30" ! A.height "30" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
+  Circle -> transformShape (styleShape (S.circle ! A.cx "10" ! A.cy "10" ! A.r "3" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
+
+transformShape :: S.Svg -> Transform -> S.Svg
+transformShape shape Identity = shape
+transformShape shape (Translate (Vector x y)) = shape ! A.transform (V.translate x y)
+transformShape shape (Scale (Vector x y)) = shape ! A.transform (V.scale x y)
+transformShape shape (Rotate ) = shape ! A.transform (V.rotate matrix)
 
 styleShape :: S.Svg -> Style -> S.Svg
-styleShape svg (Style strokeColour fillColour strokeWidth) = svg ! A.stroke (colToAttrVal strokeColour) ! A.fill (colToAttrVal fillColour) ! A.strokeWidth (doubleToAttrVal strokeWidth)
+styleShape shape (Style strokeColour fillColour strokeWidth) = shape ! A.stroke (colToAttrVal strokeColour) ! A.fill (colToAttrVal fillColour) ! A.strokeWidth (doubleToAttrVal strokeWidth)
 
 colToAttrVal :: Colour -> S.AttributeValue
 colToAttrVal Red = S.stringValue "red"
