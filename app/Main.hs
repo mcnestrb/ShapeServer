@@ -13,7 +13,7 @@ import Shapes
 
 main = scotty 3000 $ do
   get "/" $ do
-    html $ renderSvg (S.docTypeSvg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do (S.g $ do foldSvgs [((rotate 30.0), square, (Style Red Green 1.0))]))
+    html $ renderSvg (S.docTypeSvg ! A.version "1.1" ! A.viewbox "0 0 100 50" $ do S.g $ do (foldSvgs [(identity, square, (Style Red Green 1.0)),(identity, Shapes.empty, (Style White White 0.0))]))
 
 foldSvgs :: Drawing -> S.Svg
 foldSvgs drawing = Prelude.foldl1 bindSvgs (shapesToSvgs drawing)
@@ -31,6 +31,7 @@ shapeToSvg :: (Transform, Shape, Style) -> S.Svg
 shapeToSvg (tr, sh, st) = case sh of
   Square -> transformShape (styleShape (S.rect ! A.x "40" ! A.y "10" ! A.width "30" ! A.height "30" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
   Circle -> transformShape (styleShape (S.circle ! A.cx "10" ! A.cy "10" ! A.r "3" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
+  Empty -> S.rect
 
 transformShape :: S.Svg -> Transform -> S.Svg
 transformShape shape Identity = shape
