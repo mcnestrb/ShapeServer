@@ -30,6 +30,7 @@ executable ShapeServer-exe
                      , blaze-svg
                      , blaze-html
   default-language:    Haskell2010
+  other-modules:       Shapes
 
 test-suite ShapeServer-test
   type:                exitcode-stdio-1.0

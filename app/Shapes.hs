@@ -84,6 +84,7 @@ white = White
 black = Black
 
 data Style = Style Colour Colour Double
+             | None
              deriving (Show, Read)
 
 style = Style
