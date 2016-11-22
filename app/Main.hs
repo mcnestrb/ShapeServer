@@ -22,10 +22,10 @@ main = scotty 3000 $ do
           B.body $ do
             B.h1 B.! H.style "text-align:center" $ "Brian's Shape Server"
             B.form B.! H.action "makeSvg" ! H.method "post" $ do
-              B.input B.! H.name "shapeInput" B.! H.type_ "text" B.! H.size "200" B.! H.value (S.stringValue "[((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Circle, (Style Red Green 5.0))]")
+              B.input B.! H.name "shapeInput" B.! H.type_ "text" B.! H.size "200" B.! H.value (S.stringValue "[((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Square, (Style Red Green 5.0))]")
               B.input B.! H.style "margin-left: 10px" B.! H.type_ "submit" B.! H.value "Submit"
             B.div B.! H.style "border:1px solid black; margin-top: 20px" $ do
-              S.svg $ do S.g $ do foldSvgs [((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Circle, (Style Red Green 5.0))]
+              S.svg $ do S.g $ do foldSvgs [((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Square, (Style Red Green 5.0))]
 
   post "/makeSvg" $ do
     shapeInput <- param "shapeInput"
@@ -35,6 +35,7 @@ main = scotty 3000 $ do
         B.docTypeHtml $ do
           B.head $ B.title "Brian's ShapeServer"
           B.body $ do
+            B.h1 B.! H.style "text-align:center" $ "Brian's Shape Server"
             B.form B.! H.action "makeSvg" ! H.method "post" $ do
               B.input B.! H.name "shapeInput" B.! H.type_ "text" B.! H.size "200" B.! H.value (S.stringValue shapeInput)
               B.input B.! H.style "margin-left: 10px" B.! H.type_ "submit" B.! H.value "Submit"
@@ -70,6 +71,7 @@ transformToTransformList :: Transform -> [Transform] -> [Transform]
 transformToTransformList Identity list = (Identity:list)
 transformToTransformList (Translate vector) list = ((Translate vector):list)
 transformToTransformList (Scale vector) list = ((Scale vector):list)
+transformToTransformList (Rotate angle) list = ((Rotate angle):list)
 transformToTransformList (Compose transform1 transform2) list = (transformToTransformList transform1 list) ++ (transformToTransformList transform2 list)
 
 transformListToString :: [Transform] -> String
@@ -77,6 +79,7 @@ transformListToString [] = " "
 transformListToString (Identity:trs) = transformListToString trs
 transformListToString ((Translate (Vector x y)):trs) = "translate(" ++ show x ++ " " ++ show y ++ ") " ++ transformListToString trs
 transformListToString ((Scale (Vector x y)):trs) = "scale(" ++ show x ++ " " ++ show y ++ ") " ++ transformListToString trs
+transformListToString ((Rotate angle):trs) = "rotate(" ++ show angle ++ " 200 10) " ++ transformListToString trs
 
 styleShape :: S.Svg -> Style -> S.Svg
 styleShape shape None = shape

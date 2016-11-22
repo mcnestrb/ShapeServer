@@ -56,20 +56,20 @@ data Transform = Identity
            | Translate Vector
            | Scale Vector
            | Compose Transform Transform
-           | Rotate Matrix
+           | Rotate Double
              deriving (Show, Read)
 
 identity = Identity
 translate = Translate
 scale = Scale
-rotate angle = Rotate $ matrix (cos angle) (-sin angle) (sin angle) (cos angle)
+rotate = Rotate
 t0 <+> t1 = Compose t0 t1
 
 transform :: Transform -> Point -> Point
 transform Identity                   x = id x
 transform (Translate (Vector tx ty)) (Vector px py)  = Vector (px - tx) (py - ty)
 transform (Scale (Vector tx ty))     (Vector px py)  = Vector (px / tx)  (py / ty)
-transform (Rotate m)                 p = (invert m) `mult` p
+transform (Rotate angle)             p = (invert (matrix (cos angle) (-sin angle) (sin angle) (cos angle))) `mult` p
 transform (Compose t1 t2)            p = transform t2 $ transform t1 p
 
 -- Style
