@@ -35,4 +35,5 @@ The `Double` is the strokeWidth
 ## Sample Input
 The sample input already in the text box produces the following shape
 `[((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Square, (Style Red Green 5.0))]`
-!(https://github.com/mcnestrb/ShapeServer/blob/master/ShapeExample.png)
+
+![Shape Example](https://github.com/mcnestrb/ShapeServer/blob/master/ShapeExample.png)
