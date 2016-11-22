@@ -55,8 +55,8 @@ shapesToSvgs (shape:shapes) = (shapeToSvg shape):(shapesToSvgs shapes)
 
 shapeToSvg :: (Transform, Shape, Style) -> S.Svg
 shapeToSvg (tr, sh, st) = case sh of
-  Square -> transformShape (styleShape (S.rect ! A.x "400" ! A.y "10" ! A.width "100" ! A.height "100" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
-  Circle -> transformShape (styleShape (S.circle ! A.cx "100" ! A.cy "70" ! A.r "50" ! B.customAttribute "vector-scaling" "non-scaling-stroke") st) tr
+  Square -> transformShape (styleShape (S.rect ! A.x "200" ! A.y "10" ! A.width "100" ! A.height "100" ! B.customAttribute "vector-effect" "non-scaling-stroke") st) tr
+  Circle -> transformShape (styleShape (S.circle ! A.cx "30" ! A.cy "70" ! A.r "50" ! B.customAttribute "vector-effect" "non-scaling-stroke") st) tr
   Empty -> S.rect
 
 transformShape :: S.Svg -> Transform -> S.Svg
