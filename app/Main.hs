@@ -79,7 +79,7 @@ transformListToString [] = " "
 transformListToString (Identity:trs) = transformListToString trs
 transformListToString ((Translate (Vector x y)):trs) = "translate(" ++ show x ++ " " ++ show y ++ ") " ++ transformListToString trs
 transformListToString ((Scale (Vector x y)):trs) = "scale(" ++ show x ++ " " ++ show y ++ ") " ++ transformListToString trs
-transformListToString ((Rotate angle):trs) = "rotate(" ++ show angle ++ " 200 10) " ++ transformListToString trs
+transformListToString ((Rotate angle):trs) = "rotate(" ++ show angle ++ ") " ++ transformListToString trs
 
 styleShape :: S.Svg -> Style -> S.Svg
 styleShape shape None = shape
