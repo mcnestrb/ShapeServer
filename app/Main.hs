@@ -20,27 +20,26 @@ main = scotty 3000 $ do
         B.docTypeHtml $ do
           B.head $ B.title "Brian's ShapeServer"
           B.body $ do
+            B.h1 B.! H.style "text-align:center" $ "Brian's Shape Server"
             B.form B.! H.action "makeSvg" ! H.method "post" $ do
-              B.input B.! H.name "shapeInput" B.! H.type_ "text"
-              B.br
-              B.input B.! H.type_ "submit" B.! H.value "Submit"
-            B.div B.! H.style "border:1px solid black" $ do
-              S.svg $ do S.g $ do foldSvgs [((Compose (Translate (Vector 20.0 0.0)) (Scale (Vector 1.1 1.1))), circle, (Style Black White 2.0)), (identity, square, (Style Blue Black 2.0))]
+              B.input B.! H.name "shapeInput" B.! H.type_ "text" B.! H.size "200" B.! H.value (S.stringValue "[((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Circle, (Style Red Green 5.0))]")
+              B.input B.! H.style "margin-left: 10px" B.! H.type_ "submit" B.! H.value "Submit"
+            B.div B.! H.style "border:1px solid black; margin-top: 20px" $ do
+              S.svg $ do S.g $ do foldSvgs [((Compose (Translate (Vector 100.0 0.0)) (Scale (Vector 1.1 1.1))), Circle, (Style Black Blue 2.0)), (Identity, Circle, (Style Red Green 5.0))]
 
   post "/makeSvg" $ do
-    postShape <- param "shapeInput"
-    let shapeDescription = (read postShape :: Drawing)
+    shapeInput <- param "shapeInput"
+    let shapeDescription = (read shapeInput :: Drawing)
     html $ do
       renderHtml $ do
         B.docTypeHtml $ do
           B.head $ B.title "Brian's ShapeServer"
           B.body $ do
             B.form B.! H.action "makeSvg" ! H.method "post" $ do
-              B.input B.! H.name "shapeInput" B.! H.type_ "text"
-              B.br
-              B.input B.! H.type_ "submit" B.! H.value "Submit"
-            B.div B.! H.style "border:1px solid black" B.! H.width "900" B.! H.height "600" $ do
-              S.svg ! A.width "900" ! A.height "600" $ do S.g $ do foldSvgs ((identity, Shapes.empty, None):shapeDescription)
+              B.input B.! H.name "shapeInput" B.! H.type_ "text" B.! H.size "200" B.! H.value (S.stringValue shapeInput)
+              B.input B.! H.style "margin-left: 10px" B.! H.type_ "submit" B.! H.value "Submit"
+            B.div B.! H.style "border:1px solid black; margin-top: 20px" $ do
+              S.svg $ do S.g $ do foldSvgs shapeDescription
 
 foldSvgs :: Drawing -> S.Svg
 foldSvgs drawing = Prelude.foldl1 bindSvgs (shapesToSvgs drawing)
